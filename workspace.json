@@ -120,13 +120,13 @@
           "builder": "@nrwl/workspace:run-commands",
           "dependsOn": [
             {
-              "target": "server",
-              "projects": "self"
-            },            
-            {
               "target": "build",
               "projects": "self"
-            }          
+            },         
+            {
+              "target": "server",
+              "projects": "self"
+            }            
           ],
           "options": {
             "commands": [
