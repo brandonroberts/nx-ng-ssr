@@ -1,7 +1,236 @@
 {
   "version": 2,
-  "projects": {},
+  "projects": {
+    "mystream": {
+      "projectType": "application",
+      "root": "apps/mystream",
+      "sourceRoot": "apps/mystream/src",
+      "prefix": "ngssr",
+      "targets": {
+        "build": {
+          "executor": "@angular-devkit/build-angular:browser",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/mystream/browser",
+            "index": "apps/mystream/src/index.html",
+            "main": "apps/mystream/src/main.ts",
+            "polyfills": "apps/mystream/src/polyfills.ts",
+            "tsConfig": "apps/mystream/tsconfig.app.json",
+            "assets": [
+              "apps/mystream/src/favicon.ico",
+              "apps/mystream/src/assets"
+            ],
+            "styles": ["apps/mystream/src/styles.css"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/mystream/src/environments/environment.ts",
+                  "with": "apps/mystream/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "executor": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "mystream:build:production"
+            },
+            "development": {
+              "browserTarget": "mystream:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "executor": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "mystream:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/mystream/src/**/*.ts",
+              "apps/mystream/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/mystream"],
+          "options": {
+            "jestConfig": "apps/mystream/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "server": {
+          "executor": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/apps/mystream/server",
+            "main": "apps/mystream/src/main.server.ts",
+            "tsConfig": "apps/mystream/tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "apps/mystream/src/environments/environment.ts",
+                  "with": "apps/mystream/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": false,
+              "sourceMap": true,
+              "extractLicenses": false
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-all": {
+          "builder": "@nrwl/workspace:run-commands",
+          "dependsOn": [
+            {
+              "target": "server",
+              "projects": "self"
+            },            
+            {
+              "target": "build",
+              "projects": "self"
+            }          
+          ],
+          "options": {
+            "commands": [
+              { "command": "nx serve mystream-ssr" }
+            ]
+          }
+        }        
+      }
+    },
+    "mystream-e2e": {
+      "root": "apps/mystream-e2e",
+      "sourceRoot": "apps/mystream-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/mystream-e2e/cypress.json",
+            "tsConfig": "apps/mystream-e2e/tsconfig.e2e.json",
+            "devServerTarget": "mystream:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "mystream:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/mystream-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "mystream-ssr": {
+      "root": "apps/mystream-ssr",
+      "sourceRoot": "apps/mystream-ssr/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/mystream-ssr",
+            "main": "apps/mystream-ssr/src/main.ts",
+            "tsConfig": "apps/mystream-ssr/tsconfig.app.json",
+            "assets": ["apps/mystream-ssr/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/mystream-ssr/src/environments/environment.ts",
+                  "with": "apps/mystream-ssr/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "mystream-ssr:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/mystream-ssr/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/mystream-ssr"],
+          "options": {
+            "jestConfig": "apps/mystream-ssr/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
   "cli": {
-    "defaultCollection": "@nrwl/workspace"
-  }
+    "defaultCollection": "@nrwl/angular"
+  },
+  "generators": {
+    "@nrwl/angular:application": {
+      "style": "css",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "css",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "css"
+    }
+  },
+  "defaultProject": "mystream"
 }
