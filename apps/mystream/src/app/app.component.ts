@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'ngssr-root',
-  template: '',
+  template: 'my app works!',
   styles: [''],
 })
 export class AppComponent {
